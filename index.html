@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Live Stream</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="flex">
+        <h2>Sport Live Football</h2>
+        <video id="liveVideo" controls autoplay width="640" height="360">
+          <!-- در صورت پشتیبانی مرورگر از HLS، این منبع استفاده می‌شود -->
+          <source
+            src="https://example.com/live/stream.m3u8"
+            type="application/x-mpegURL"
+          />
+          مرورگر شما پخش ویدیو را پشتیبانی نمی‌کند.
+        </video>
+      </div>
+    </div>
+    <!-- استفاده از hls.js در صورتی که مرورگر از HLS پشتیبانی نکند -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script src="./main.js"></script>
+  </body>
+</html>

@@ -18,6 +18,7 @@ body {
   background: url("img/uefa-champions-league-live.jpg") no-repeat center center;
   background-size: cover;
   position: relative;
+  color: white;
 }
 
 body::before {

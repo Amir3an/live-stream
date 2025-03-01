@@ -13,8 +13,9 @@ body {
   align-items: center;
   width: 100%;
   height: 105vh;
-  background-color: rgb(202, 202, 202);
   overflow-x: hidden;
+  background: url("img/uefa-champions-league-live.jpg") no-repeat center center;
+  object-fit: contain;
 }
 
 .container {

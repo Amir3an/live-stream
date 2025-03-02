@@ -42,10 +42,23 @@ body::before {
   width: 100%;
   align-items: center;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
+}
+
+.content {
+  width: 50%;
+  height: 550px;
+  background-color: rgba(212, 212, 212, 0.151);
+  border-radius: 2rem;
+  justify-content: center;
+  padding-top: 2rem;
+  align-items: center;
 }
 
 .live-stream {
-  width: 400px;
-  heght: 180px;
+  width: 90%;
+  height: auto;
+  margin: auto;
+  border-radius: 2rem;
+  display: block; /* Ensures it's block-level for centering */
 }

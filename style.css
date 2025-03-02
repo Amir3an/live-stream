@@ -44,3 +44,8 @@ body::before {
   display: flex;
   justify-content: space-around;
 }
+
+.live-stream {
+  width: 400px;
+  heght: 180px;
+}

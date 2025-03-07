@@ -5,19 +5,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
     <title>Live Stream</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   </head>
   <body>
     <div class="container">
       <div class="flex">
         <h2>Sport Live Football</h2>
         <div class="content">
-          <video
-            class="live-stream"
-            src="mp4/59217-491926143_medium.mp4"
-            controls
-          ></video>
+          <video id="liveStream" class="live-stream" controls></video>
         </div>
       </div>
     </div>
+
+    <script>
+      const API_KEY = "f02e91f92241df62d84178ce55d0ce11"; // کلید API خود را جایگزین کنید
+      const API_URL = "https://v3.football.api-sports.io/fixtures";
+
+      // دریافت تاریخ امروز
+      const today = new Date().toISOString().split("T")[0];
+
+      // دریافت بازی‌ها بر اساس تاریخ امروز
+      axios
+        .get(API_URL, {
+          headers: { "x-apisports-key": API_KEY },
+          params: { date: today }, // پارامتر تاریخ
+        })
+        .then((response) => {
+          console.log("Response:", response.data); // نمایش پاسخ API در کنسول
+
+          // جستجو برای بازی‌هایی که لینک استریم دارند
+          const matchesWithStreams = response.data.response.filter((match) => {
+            return match.streams && match.streams.length > 0; // بررسی وجود استریم
+          });
+
+          if (matchesWithStreams.length > 0) {
+            matchesWithStreams.forEach((match) => {
+              console.log(`Match: ${match.team1.name} vs ${match.team2.name}`);
+              console.log(
+                "Stream URLs:",
+                match.streams.map((stream) => stream.url)
+              );
+              // اگر می‌خواهید لینک اول را برای پخش نمایش دهید:
+              const streamUrl = match.streams[0].url;
+              document.getElementById("liveStream").src = streamUrl;
+            });
+          } else {
+            console.error("هیچ بازی با لینک استریم یافت نشد.");
+          }
+        })
+        .catch((error) => {
+          console.error("Error occurred:", error); // نمایش جزئیات خطا
+          alert("مشکلی در ارتباط با API پیش آمده است.");
+        });
+    </script>
   </body>
 </html>

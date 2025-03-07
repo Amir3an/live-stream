@@ -1,62 +1,118 @@
 <!DOCTYPE html>
 <html lang="fa">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-B5641C4FE4"
+    ></script>
     <link rel="stylesheet" href="style.css" />
-    <title>Live Stream</title>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-B5641C4FE4");
+    </script>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>پرشیانااسپورت</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="HandheldFriendly" content="true" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #181818; /* پس‌زمینه تیره */
+        font-family: "Arial", sans-serif; /* تغییر فونت */
+        color: white; /* رنگ متن */
+      }
+
+      #player {
+        width: 80%; /* عرض پلیر به صورت درصدی */
+        max-width: 800px; /* حداکثر عرض پلیر برای بزرگترها */
+        height: 450px; /* ارتفاع پلیر */
+        border-radius: 15px; /* گرد کردن گوشه‌های پلیر */
+        overflow: hidden; /* جلوگیری از نمایش بخش‌های اضافی */
+        background-color: black; /* پس‌زمینه پلیر */
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); /* سایه برای عمق دادن */
+        transition: transform 0.3s; /* انیمیشن برای افکت */
+      }
+
+      #player:hover {
+        transform: scale(1.02); /* بزرگ‌نمایی هنگام هاور */
+      }
+
+      .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5); /* افکت تار برای فضای پشت پلیر */
+        border-radius: 15px; /* گرد کردن گوشه‌ها */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      #player:hover .overlay {
+        opacity: 1; /* نمایش افکت تار هنگام هاور */
+      }
+
+      .title {
+        font-size: 24px; /* اندازه عنوان */
+        margin: 10px 0;
+      }
+
+      .description {
+        font-size: 14px; /* اندازه توضیحات */
+        max-width: 300px; /* حداکثر عرض توضیحات */
+      }
+    </style>
+
+    <script src="https://cdn.livekadeh.com/js/jwplayer.js"></script>
   </head>
   <body>
-    <div class="container">
-      <div class="flex">
-        <h2>Sport Live Football</h2>
-        <div class="content">
-          <video id="liveStream" class="live-stream" controls></video>
+    <div id="player">
+      <div class="overlay">
+        <div>
+          <div class="title">beinsport</div>
+          <div class="description">لذت ببرید از تماشای زنده مسابقات ورزشی.</div>
         </div>
       </div>
     </div>
 
     <script>
-      const API_KEY = "f02e91f92241df62d84178ce55d0ce11"; // کلید API خود را جایگزین کنید
-      const API_URL = "https://v3.football.api-sports.io/fixtures";
+      var playerInstance = jwplayer("player");
+      playerInstance.setup({
+        file: "https://spstr.abntv.live/hls/psstream.m3u8",
+        width: "100%",
+        height: "100%",
+        autostart: false,
+        controls: true,
+        aspectratio: "16:9",
+        skin: {
+          name: "seven",
+          active: "#FFFFFF",
+        },
 
-      // دریافت تاریخ امروز
-      const today = new Date().toISOString().split("T")[0];
-
-      // دریافت بازی‌ها بر اساس تاریخ امروز
-      axios
-        .get(API_URL, {
-          headers: { "x-apisports-key": API_KEY },
-          params: { date: today }, // پارامتر تاریخ
-        })
-        .then((response) => {
-          console.log("Response:", response.data); // نمایش پاسخ API در کنسول
-
-          // جستجو برای بازی‌هایی که لینک استریم دارند
-          const matchesWithStreams = response.data.response.filter((match) => {
-            return match.streams && match.streams.length > 0; // بررسی وجود استریم
-          });
-
-          if (matchesWithStreams.length > 0) {
-            matchesWithStreams.forEach((match) => {
-              console.log(`Match: ${match.team1.name} vs ${match.team2.name}`);
-              console.log(
-                "Stream URLs:",
-                match.streams.map((stream) => stream.url)
-              );
-              // اگر می‌خواهید لینک اول را برای پخش نمایش دهید:
-              const streamUrl = match.streams[0].url;
-              document.getElementById("liveStream").src = streamUrl;
-            });
-          } else {
-            console.error("هیچ بازی با لینک استریم یافت نشد.");
-          }
-        })
-        .catch((error) => {
-          console.error("Error occurred:", error); // نمایش جزئیات خطا
-          alert("مشکلی در ارتباط با API پیش آمده است.");
-        });
+        logo: {
+          file: "logo.png",
+          link: "http://beinsports.ir/assets/img/beinlogo.svg",
+        },
+      });
     </script>
   </body>
 </html>

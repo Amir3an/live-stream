@@ -1,118 +1,134 @@
 <!DOCTYPE html>
-<html lang="fa">
+<html lang="fa" dir="rtl">
   <head>
-    <!-- Google tag (gtag.js) -->
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=G-B5641C4FE4"
-    ></script>
-    <link rel="stylesheet" href="style.css" />
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("js", new Date());
-      gtag("config", "G-B5641C4FE4");
-    </script>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>پرشیانااسپورت</title>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <meta name="HandheldFriendly" content="true" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no"
-    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>پخش زنده پرشیانا اسپورت</title>
 
+    <!-- استایل اختصاصی -->
     <style>
-      body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
+      * {
         margin: 0;
-        background-color: #181818; /* پس‌زمینه تیره */
-        font-family: "Arial", sans-serif; /* تغییر فونت */
-        color: white; /* رنگ متن */
+        padding: 0;
+        box-sizing: border-box;
       }
 
-      #player {
-        width: 80%; /* عرض پلیر به صورت درصدی */
-        max-width: 800px; /* حداکثر عرض پلیر برای بزرگترها */
-        height: 450px; /* ارتفاع پلیر */
-        border-radius: 15px; /* گرد کردن گوشه‌های پلیر */
-        overflow: hidden; /* جلوگیری از نمایش بخش‌های اضافی */
-        background-color: black; /* پس‌زمینه پلیر */
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); /* سایه برای عمق دادن */
-        transition: transform 0.3s; /* انیمیشن برای افکت */
-      }
-
-      #player:hover {
-        transform: scale(1.02); /* بزرگ‌نمایی هنگام هاور */
-      }
-
-      .overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.5); /* افکت تار برای فضای پشت پلیر */
-        border-radius: 15px; /* گرد کردن گوشه‌ها */
+      body {
+        background: #1a1a1a;
+        font-family: "Tahoma", sans-serif;
+        color: #fff;
+        min-height: 100vh;
         display: flex;
-        justify-content: center;
+        flex-direction: column;
         align-items: center;
+      }
+
+      #container {
+        width: 100%;
+        max-width: 1200px;
+        padding: 20px;
+      }
+
+      /* استایل پلیر ویدیو */
+      #player {
+        width: 100%;
+        aspect-ratio: 16/9;
+        background: #000;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        margin-top: 30px;
+      }
+
+      /* استایل لوگو */
+      .jw-logo {
+        filter: brightness(0) invert(1); /* تغییر رنگ لوگو به سفید */
+      }
+
+      /* پیغام خطا */
+      .error-message {
+        color: #ff4444;
         text-align: center;
-        opacity: 0;
-        transition: opacity 0.3s;
+        padding: 20px;
+        display: none;
       }
 
-      #player:hover .overlay {
-        opacity: 1; /* نمایش افکت تار هنگام هاور */
-      }
-
-      .title {
-        font-size: 24px; /* اندازه عنوان */
-        margin: 10px 0;
-      }
-
-      .description {
-        font-size: 14px; /* اندازه توضیحات */
-        max-width: 300px; /* حداکثر عرض توضیحات */
+      /* لودینگ */
+      .loading {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 18px;
       }
     </style>
 
-    <script src="https://cdn.livekadeh.com/js/jwplayer.js"></script>
+    <!-- کتابخانه JW Player -->
+    <script src="https://cdn.jwplayer.com/libraries/abcdef12.js"></script>
+    <!-- جایگزین کنید با لینک واقعی -->
   </head>
   <body>
-    <div id="player">
-      <div class="overlay">
-        <div>
-          <div class="title">beinsport</div>
-          <div class="description">لذت ببرید از تماشای زنده مسابقات ورزشی.</div>
-        </div>
-      </div>
+    <div id="container">
+      <div id="player"></div>
+      <div class="error-message" id="errorMsg"></div>
+      <div class="loading">در حال بارگذاری پخش زنده...</div>
     </div>
 
     <script>
-      var playerInstance = jwplayer("player");
-      playerInstance.setup({
-        file: "https://spstr.abntv.live/hls/psstream.m3u8",
+      // تنظیمات پایه
+      const config = {
+        playlist: [
+          {
+            file: "https://cors-anywhere.herokuapp.com/https://spstr.abntv.live/hls/psstream.m3u8", // استفاده از پروکسی CORS
+            title: "پخش زنده بین‌اسپورت",
+            description: "لذت تماشای زنده مسابقات ورزشی",
+            image: "https://example.com/poster.jpg",
+          },
+        ],
         width: "100%",
         height: "100%",
         autostart: false,
-        controls: true,
-        aspectratio: "16:9",
+        mute: true, // ضروری برای پخش خودکار در مرورگرهای جدید
+        preload: "auto",
+        logo: {
+          file: "https://beinsports.ir/assets/img/beinlogo.png", // استفاده از URL کامل
+          link: "https://beinsports.ir",
+          position: "top-left",
+        },
         skin: {
           name: "seven",
-          active: "#FFFFFF",
+          active: "#00FF00",
         },
+      };
 
-        logo: {
-          file: "logo.png",
-          link: "http://beinsports.ir/assets/img/beinlogo.svg",
-        },
-      });
+      // مقداردهی اولیه پلیر
+      const initPlayer = () => {
+        const player = jwplayer("player")
+          .setup(config)
+          .on("ready", () => {
+            document.querySelector(".loading").style.display = "none";
+          })
+          .on("error", (e) => {
+            document.getElementById("errorMsg").style.display = "block";
+            document.getElementById("errorMsg").innerHTML = `
+                        خطا در اتصال: ${e.message}<br>
+                        کد خطا: ${e.code}
+                    `;
+          });
+      };
+
+      // شروع پس از لود صفحه
+      window.addEventListener("DOMContentLoaded", initPlayer);
+
+      // هندل خطاهای جهانی
+      window.onerror = function (message, source, lineno, colno, error) {
+        document.getElementById("errorMsg").style.display = "block";
+        document.getElementById("errorMsg").innerHTML = `
+                خطای سیستمی: ${message}<br>
+                در فایل: ${source}<br>
+                خط: ${lineno}
+            `;
+      };
     </script>
   </body>
 </html>
